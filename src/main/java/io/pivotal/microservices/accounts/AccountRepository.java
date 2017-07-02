@@ -7,6 +7,7 @@ import org.springframework.data.repository.Repository;
 
 /**
  * Repository for Account data implemented using Spring Data JPA.
+ * Repository 是一个标记型接口，它不包含任何方法，当然如果有需要，Spring Data 也提供了若干 Repository 子接口，其中定义了一些常用的增删改查，以及分页相关的方法
  * 
  * @author Paul Chapman
  */

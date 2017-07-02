@@ -25,6 +25,7 @@ public class SearchCriteria {
 	}
 
 	public boolean isValid() {
+		//StringUtils.hasText(str)方法，如果str==nul则返回false，否则返回true
 		if (StringUtils.hasText(accountNumber))
 			return !(StringUtils.hasText(searchText));
 		else
@@ -32,11 +33,13 @@ public class SearchCriteria {
 	}
 
 	public boolean validate(Errors errors) {
-		if (StringUtils.hasText(accountNumber)) {
+		if (StringUtils.hasText(accountNumber)) 
+		{
 			if (accountNumber.length() != 9)
 				errors.rejectValue("accountNumber", "badFormat",
 						"Account number should be 9 digits");
-			else {
+			else
+			{
 				try {
 					Integer.parseInt(accountNumber);
 				} catch (NumberFormatException e) {

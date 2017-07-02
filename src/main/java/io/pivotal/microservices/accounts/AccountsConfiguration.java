@@ -23,11 +23,12 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
  * 
  * @author Paul Chapman
  */
-@Configuration
-@ComponentScan
+@Configuration     //相当于把该类作为spring的xml配置文件中的<beans>，作用为：配置spring容器(应用上下文),
+									//可通过ApplicationContext context = new AnnotationConfigApplicationContext(TestConfiguration.class);语句加载该容器
+@ComponentScan   //@Component注解的类作为使用自动扫描注入配置路径下的备选对象,
 @EntityScan("io.pivotal.microservices.accounts")
-@EnableJpaRepositories("io.pivotal.microservices.accounts")
-@PropertySource("classpath:db-config.properties")
+@EnableJpaRepositories("io.pivotal.microservices.accounts")    //用于Srping JPA的代码配置，用于取代xml形式的配置文件,查找给定目录下的Repository类
+@PropertySource("classpath:db-config.properties")   //读取配置文件中的配置信息
 public class AccountsConfiguration {
 
 	protected Logger logger;
@@ -40,7 +41,7 @@ public class AccountsConfiguration {
 	 * Creates an in-memory "rewards" database populated with test data for fast
 	 * testing
 	 */
-	@Bean
+	@Bean    //标注在方法上(返回某个实例的方法)，等价于spring的xml配置文件中的<bean>，作用为：注册bean对象
 	public DataSource dataSource() {
 		logger.info("dataSource() invoked");
 

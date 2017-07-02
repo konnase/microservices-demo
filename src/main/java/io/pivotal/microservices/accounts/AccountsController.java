@@ -15,7 +15,7 @@ import io.pivotal.microservices.exceptions.AccountNotFoundException;
  * 
  * @author Paul Chapman
  */
-@RestController
+@RestController   //@RestController = @Controller + @ResponseBody, 不能返回jsp页面，只能返回json、xml等格式的内容
 public class AccountsController {
 
 	protected Logger logger = Logger.getLogger(AccountsController.class
@@ -28,12 +28,12 @@ public class AccountsController {
 	 * @param accountRepository
 	 *            An account repository implementation.
 	 */
-	@Autowired
+	@Autowired   //@Autowired标签会自动寻找相应的备选对象完成对bean的注入工作
 	public AccountsController(AccountRepository accountRepository) {
 		this.accountRepository = accountRepository;
 
 		logger.info("AccountRepository says system has "
-				+ accountRepository.countAccounts() + " accounts");
+				+ accountRepository.countAccounts() + " accounts");    //执行countAccount方法的注释中的SQL语句
 	}
 
 	/**

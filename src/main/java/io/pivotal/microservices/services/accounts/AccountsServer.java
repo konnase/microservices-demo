@@ -19,12 +19,12 @@ import io.pivotal.microservices.accounts.AccountsConfiguration;
  * 
  * @author Paul Chapman
  */
-@EnableAutoConfiguration
-@EnableDiscoveryClient
+@EnableAutoConfiguration   //此注释自动载入应用程序所需的所有Bean——这依赖于Spring Boot在类路径中的查找, AccountsServer相当于一个spring容器
+@EnableDiscoveryClient      //@EnableDiscoveryClient注解是基于spring-cloud-commons依赖，并且在classpath中实现；向Discovery Service完成注册
 @Import(AccountsConfiguration.class)
 public class AccountsServer {
 
-	@Autowired
+	@Autowired    //完成对类属性的自动装配，来消除 set ，get方法
 	protected AccountRepository accountRepository;
 
 	protected Logger logger = Logger.getLogger(AccountsServer.class.getName());

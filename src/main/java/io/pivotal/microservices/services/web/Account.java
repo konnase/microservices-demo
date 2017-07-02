@@ -9,7 +9,7 @@ import com.fasterxml.jackson.annotation.JsonRootName;
  * 
  * @author Paul Chapman
  */
-@JsonRootName("Account")
+@JsonRootName("Account")   //定义json数据中根元素的名称，即以json格式传递的对象的类名。
 public class Account {
 
 	protected Long id;
@@ -29,7 +29,8 @@ public class Account {
 	}
 
 	/**
-	 * Set JPA id - for testing and JPA only. Not intended for normal use.
+	 * Set JPA id - for testing a
+	 * nd JPA only. Not intended for normal use.
 	 * 
 	 * @param id
 	 *            The new id.
