@@ -1,8 +1,9 @@
 package io.pivotal.microservices.accounts;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
+import java.sql.Timestamp;
 
+import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -16,7 +17,7 @@ import javax.persistence.Table;
  * @author Paul Chapman
  */
 @Entity   //指明这是一个实体类
-@Table(name = "T_ACCOUNT")    //指明该类在数据库中映射的表名
+@Table(name = "City_rain")    //指明该类在数据库中映射的表名
 public class Account implements Serializable {   //实现Serializable接口，实现Account类的序列化，便于通过ObjectOuputStream和ObjectInputStream完成对象的存取
 
 	private static final long serialVersionUID = 1L;
@@ -26,12 +27,14 @@ public class Account implements Serializable {   //实现Serializable接口，�
 	@Id    //指明数据表的主键
 	protected Long id;
 
-	protected String number;
+	protected Timestamp time;
 
-	@Column(name = "name")    //定义了将成员属性映射到关系表中的哪一列和该列的结构信息,结构信息包括：name（映射的列名），unique（是否为主键），nullable（是否可为空）等
-	protected String owner;
+	@Column(name = "city")    //定义了将成员属性映射到关系表中的哪一列和该列的结构信息,结构信息包括：name（映射的列名），unique（是否为主键），nullable（是否可为空）等
+	protected String city;
 
-	protected BigDecimal balance;
+	@Column(name = "mount", columnDefinition = "double")
+	@Basic
+	protected float mount;
 
 	/**
 	 * This is a very simple, and non-scalable solution to generating unique
@@ -52,14 +55,14 @@ public class Account implements Serializable {   //实现Serializable接口，�
 	 * Default constructor for JPA only.
 	 */
 	protected Account() {
-		balance = BigDecimal.ZERO;
+		//mount = 0;
 	}
 
-	public Account(String number, String owner) {
+	public Account(Timestamp time, String city) {
 		id = getNextId();
-		this.number = number;
-		this.owner = owner;
-		balance = BigDecimal.ZERO;
+		this.time = time;
+		this.city = city;
+		//mount = 0;
 	}
 
 	public long getId() {
@@ -76,37 +79,37 @@ public class Account implements Serializable {   //实现Serializable接口，�
 		this.id = id;
 	}
 
-	public String getNumber() {
-		return number;
+	public Timestamp getTime() {
+		return time;
 	}
 
-	protected void setNumber(String accountNumber) {
-		this.number = accountNumber;
+	public void setTime(Timestamp time) {
+		this.time = time;
 	}
 
-	public String getOwner() {
-		return owner;
+	public String getCity() {
+		return city;
 	}
 
-	protected void setOwner(String owner) {
-		this.owner = owner;
+	public void setCity(String city) {
+		this.city = city;
 	}
 
-	public BigDecimal getBalance() {
-		return balance.setScale(2, BigDecimal.ROUND_HALF_EVEN);
+	public float getMount() {
+		return mount;
 	}
 
-	public void withdraw(BigDecimal amount) {
-		balance.subtract(amount);
+	public void withdraw(float amount) {
+		mount-=amount;
 	}
 
-	public void deposit(BigDecimal amount) {
-		balance.add(amount);
+	public void deposit(float amount) {
+		mount+=amount;
 	}
 
 	@Override
 	public String toString() {
-		return number + " [" + owner + "]: $" + balance;
+		return time + " [" + city + "]: $" + mount;
 	}
 
 }

@@ -19,12 +19,12 @@ import io.pivotal.microservices.exceptions.AccountNotFoundException;
  * 
  * @author Paul Chapman
  */
-@Service
+@Service    //服务层组件，用于标注业务层组件,表示定义一个bean，自动根据bean的类名实例化一个首写字母为小写的bean,如果需要自己改名字则:@Service("你自己改的bean名")
 public class WebAccountsService {
 
 	@Autowired
-	@LoadBalanced
-	protected RestTemplate restTemplate;
+	@LoadBalanced    //开启负载均衡的能力
+	protected RestTemplate restTemplate;  //spring提供REST接口的一个模板
 
 	protected String serviceUrl;
 
@@ -41,7 +41,7 @@ public class WebAccountsService {
 	 * Ribbon to look-up the service to use. This method simply exists to show
 	 * this.
 	 */
-	@PostConstruct
+	@PostConstruct     //被@PostConstruct修饰的方法会在服务器加载Servlet的时候运行，并且只会被服务器执行一次。PostConstruct在构造函数之后执行,init()方法之前执行
 	public void demoOnly() {
 		// Can't do this in the constructor because the RestTemplate injection
 		// happens afterwards.
@@ -49,20 +49,21 @@ public class WebAccountsService {
 				+ restTemplate.getRequestFactory().getClass());
 	}
 
-	public Account findByNumber(String accountNumber) {
+	public List<Account>  findByTime(String accountTime) {
 
-		logger.info("findByNumber() invoked: for " + accountNumber);
-		return restTemplate.getForObject(serviceUrl + "/accounts/{number}",
-				Account.class, accountNumber);
+		logger.info("findByTimer() invoked: for " + accountTime);
+		Account[] accounts = restTemplate.getForObject(serviceUrl + "/accounts/{accountTime}",
+				Account[].class, accountTime);
+		 return Arrays.asList(accounts);
 	}
 
-	public List<Account> byOwnerContains(String name) {
-		logger.info("byOwnerContains() invoked:  for " + name);
+	public List<Account> byCityContains(String name) {
+		logger.info("byCityContains() invoked:  for " + name);
 		Account[] accounts = null;
 
 		try {
 			accounts = restTemplate.getForObject(serviceUrl
-					+ "/accounts/owner/{name}", Account[].class, name);
+					+ "/accounts/city/{name}", Account[].class, name);
 		} catch (HttpClientErrorException e) { // 404
 			// Nothing found
 		}
@@ -73,13 +74,15 @@ public class WebAccountsService {
 			return Arrays.asList(accounts);
 	}
 
-	public Account getByNumber(String accountNumber) {
-		Account account = restTemplate.getForObject(serviceUrl
-				+ "/accounts/{number}", Account.class, accountNumber);
-
-		if (account == null)
-			throw new AccountNotFoundException(accountNumber);
-		else
-			return account;
+	public Account getByTimeAndCity(String accountTime , String city) {
+		Account[] account = restTemplate.getForObject(serviceUrl
+				+ "/accounts/{accountTime}", Account[].class, accountTime);
+		//List<Account> lists = Arrays.asList(account);
+	    for(Account a : account){
+	    	if(a.city.equals(city)){
+	    		return a;
+	    	}
+	    }
+		throw new AccountNotFoundException(accountTime);
 	}
 }

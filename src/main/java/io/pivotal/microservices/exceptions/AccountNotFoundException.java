@@ -1,6 +1,9 @@
 package io.pivotal.microservices.exceptions;
 
 import org.springframework.web.bind.annotation.ResponseStatus;
+
+import java.sql.Timestamp;
+
 import org.springframework.http.HttpStatus;
 
 /**
@@ -15,7 +18,13 @@ public class AccountNotFoundException extends RuntimeException {
 
 	private static final long serialVersionUID = 1L;
 
-	public AccountNotFoundException(String accountNumber) {
-		super("No such account: " + accountNumber);
+	public AccountNotFoundException(String cityName) {
+		super("No such account: " + cityName);
+	}
+	public AccountNotFoundException(Timestamp accountTime) {
+		super("No such account: " + accountTime);
+	}
+	public AccountNotFoundException(Timestamp accountTime , String cityName) {
+		super("No such account: " + accountTime + "  " + cityName);
 	}
 }

@@ -1,19 +1,21 @@
 package io.pivotal.microservices.services.web;
 
+import java.sql.Timestamp;
+
 import org.springframework.util.StringUtils;
 import org.springframework.validation.Errors;
 
 public class SearchCriteria {
-	private String accountNumber;
+	private String accountTime;
 
 	private String searchText;
 
-	public String getAccountNumber() {
-		return accountNumber;
+	public String getAccountTime() {
+		return accountTime;
 	}
 
-	public void setAccountNumber(String accountNumber) {
-		this.accountNumber = accountNumber;
+	public void setAccountTime(String accountTime) {
+		this.accountTime = accountTime;
 	}
 
 	public String getSearchText() {
@@ -26,27 +28,22 @@ public class SearchCriteria {
 
 	public boolean isValid() {
 		//StringUtils.hasText(str)方法，如果str==nul则返回false，否则返回true
-		if (StringUtils.hasText(accountNumber))
+		if (StringUtils.hasText(accountTime))
 			return !(StringUtils.hasText(searchText));
 		else
 			return (StringUtils.hasText(searchText));
 	}
 
 	public boolean validate(Errors errors) {
-		if (StringUtils.hasText(accountNumber)) 
+		if (StringUtils.hasText(accountTime)) 
 		{
-			if (accountNumber.length() != 9)
-				errors.rejectValue("accountNumber", "badFormat",
-						"Account number should be 9 digits");
-			else
-			{
 				try {
-					Integer.parseInt(accountNumber);
-				} catch (NumberFormatException e) {
-					errors.rejectValue("accountNumber", "badFormat",
-							"Account number should be 9 digits");
+					Timestamp.valueOf(accountTime);
+					//Integer.parseInt(accountTime);
+				} catch (Exception e) {
+					errors.rejectValue("accountTime", "badFormat",
+							"Account time should be in right format");
 				}
-			}
 
 			if (StringUtils.hasText(searchText)) {
 				errors.rejectValue("searchText", "nonEmpty",
@@ -66,7 +63,7 @@ public class SearchCriteria {
 	@Override
 	public String toString() {
 		// TODO Auto-generated method stub
-		return (StringUtils.hasText(accountNumber) ? "number: " + accountNumber
+		return (StringUtils.hasText(accountTime) ? "time: " + accountTime
 				: "")
 				+ (StringUtils.hasText(searchText) ? " text: " + searchText
 						: "");

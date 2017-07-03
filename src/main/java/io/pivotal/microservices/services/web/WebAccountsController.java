@@ -35,7 +35,7 @@ public class WebAccountsController {
 		this.accountsService = accountsService;
 	}
 
-	@InitBinder
+	@InitBinder   //表单中的日期字符串和JavaBean的Date类型的转换，而SpringMVC默认不支持这个格式的转换，所以需要手动配置，自定义数据的绑定才能解决这个问题
 	public void initBinder(WebDataBinder binder) {
 		binder.setAllowedFields("accountNumber", "searchText");
 	}
@@ -45,24 +45,37 @@ public class WebAccountsController {
 		return "index";
 	}
 
-	@RequestMapping("/accounts/{accountNumber}")
-	public String byNumber(Model model,
-			@PathVariable("accountNumber") String accountNumber) {
+	@RequestMapping("/accounts/{accountTime}&{city}")
+	public String byTimeAndCity(Model model,
+			@PathVariable("accountTime") String accountTime ,
+			@PathVariable("city") String city) {
 
-		logger.info("web-service byNumber() invoked: " + accountNumber);
+		logger.info("web-service byNumber() invoked: " + accountTime);
 
-		Account account = accountsService.findByNumber(accountNumber);
-		logger.info("web-service byNumber() found: " + account);
+		Account account = accountsService.getByTimeAndCity(accountTime,city);
+		logger.info("web-service byTimeAndCity() found: " + account);
 		model.addAttribute("account", account);
 		return "account";
 	}
 
-	@RequestMapping("/accounts/owner/{text}")
-	public String ownerSearch(Model model, @PathVariable("text") String name) {
-		logger.info("web-service byOwner() invoked: " + name);
+	@RequestMapping("/accounts/{accountTime}")
+	public String byTime(Model model,
+			@PathVariable("accountTime") String accountTime) {
 
-		List<Account> accounts = accountsService.byOwnerContains(name);
-		logger.info("web-service byOwner() found: " + accounts);
+		logger.info("web-service byNumber() invoked: " + accountTime);
+
+		List<Account>  account = accountsService.findByTime(accountTime);
+		logger.info("web-service byNumber() found: " + account);
+		model.addAttribute("account", account);
+		return "account";
+	}
+	
+	@RequestMapping("/accounts/city/{text}")
+	public String citySearch(Model model, @PathVariable("text") String name) {
+		logger.info("web-service byCity() invoked: " + name);
+
+		List<Account> accounts = accountsService.byCityContains(name);
+		logger.info("web-service byCityr() found: " + accounts);
 		model.addAttribute("search", name);
 		if (accounts != null)
 			model.addAttribute("accounts", accounts);
@@ -85,12 +98,15 @@ public class WebAccountsController {
 		if (result.hasErrors())
 			return "accountSearch";
 
-		String accountNumber = criteria.getAccountNumber();
-		if (StringUtils.hasText(accountNumber)) {
-			return byNumber(model, accountNumber);
+		String accountTime = criteria.getAccountTime();
+		String city = criteria.getSearchText();
+		if(StringUtils.hasText(accountTime)&&StringUtils.hasText(city)){
+			return byTimeAndCity(model, accountTime,city);
+		}
+		else if (StringUtils.hasText(accountTime)) {
+			return byTime(model, accountTime);
 		} else {
-			String searchText = criteria.getSearchText();
-			return ownerSearch(model, searchText);
+			return citySearch(model, city);
 		}
 	}
 }

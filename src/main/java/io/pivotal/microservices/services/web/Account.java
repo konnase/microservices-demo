@@ -1,6 +1,6 @@
 package io.pivotal.microservices.services.web;
 
-import java.math.BigDecimal;
+import java.sql.Timestamp;
 
 import com.fasterxml.jackson.annotation.JsonRootName;
 
@@ -13,15 +13,15 @@ import com.fasterxml.jackson.annotation.JsonRootName;
 public class Account {
 
 	protected Long id;
-	protected String number;
-	protected String owner;
-	protected BigDecimal balance;
+	protected Timestamp time;
+	protected String city;
+	protected float mount;
 
 	/**
 	 * Default constructor for JPA only.
 	 */
 	protected Account() {
-		balance = BigDecimal.ZERO;
+		mount=0;
 	}
 
 	public long getId() {
@@ -39,34 +39,33 @@ public class Account {
 		this.id = id;
 	}
 
-	public String getNumber() {
-		return number;
+	public Timestamp getTime() {
+		return time;
 	}
 
-	protected void setNumber(String accountNumber) {
-		this.number = accountNumber;
+	public void setTime(Timestamp time) {
+		this.time = time;
 	}
 
-	public String getOwner() {
-		return owner;
+	public String getCity() {
+		return city;
 	}
 
-	protected void setOwner(String owner) {
-		this.owner = owner;
+	public void setCity(String city) {
+		this.city = city;
 	}
 
-	public BigDecimal getBalance() {
-		return balance.setScale(2, BigDecimal.ROUND_HALF_EVEN);
+	public float getMount() {
+		return mount;
 	}
 
-	protected void setBalance(BigDecimal value) {
-		balance = value;
-		balance.setScale(2, BigDecimal.ROUND_HALF_EVEN);
+	public void setMount(float mount) {
+		this.mount = mount;
 	}
 
 	@Override
 	public String toString() {
-		return number + " [" + owner + "]: $" + balance;
+		return time + " [" + city + "]: $" + mount;
 	}
 
 }

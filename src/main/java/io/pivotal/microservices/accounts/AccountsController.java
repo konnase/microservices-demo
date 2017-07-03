@@ -1,11 +1,13 @@
 package io.pivotal.microservices.accounts;
 
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.logging.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.pivotal.microservices.exceptions.AccountNotFoundException;
@@ -45,15 +47,16 @@ public class AccountsController {
 	 * @throws AccountNotFoundException
 	 *             If the number is not recognised.
 	 */
-	@RequestMapping("/accounts/{accountNumber}")
-	public Account byNumber(@PathVariable("accountNumber") String accountNumber) {
+	@RequestMapping(value = "/accounts/time" , method=RequestMethod.GET)
+	public List<Account>  byTime(@RequestParam("time") String accountTime) {
 
-		logger.info("accounts-service byNumber() invoked: " + accountNumber);
-		Account account = accountRepository.findByNumber(accountNumber);
-		logger.info("accounts-service byNumber() found: " + account);
+		logger.info("accounts-service byTimer() invoked: " + accountTime);
+		
+		List<Account>  account = accountRepository.findByTime(Timestamp.valueOf(accountTime));
+		logger.info("accounts-service byTime() found: " + account);
 
 		if (account == null)
-			throw new AccountNotFoundException(accountNumber);
+			throw new AccountNotFoundException(accountTime);
 		else {
 			return account;
 		}
@@ -69,14 +72,14 @@ public class AccountsController {
 	 * @throws AccountNotFoundException
 	 *             If there are no matches at all.
 	 */
-	@RequestMapping("/accounts/owner/{name}")
-	public List<Account> byOwner(@PathVariable("name") String partialName) {
+	@RequestMapping(value = "/accounts/city" , method=RequestMethod.GET)
+	public List<Account> byCity(@RequestParam("city") String partialName) {
 		logger.info("accounts-service byOwner() invoked: "
 				+ accountRepository.getClass().getName() + " for "
 				+ partialName);
 
 		List<Account> accounts = accountRepository
-				.findByOwnerContainingIgnoreCase(partialName);
+				.findByCityContainingIgnoreCase(partialName);
 		logger.info("accounts-service byOwner() found: " + accounts);
 
 		if (accounts == null || accounts.size() == 0)
@@ -85,4 +88,19 @@ public class AccountsController {
 			return accounts;
 		}
 	}
+	
+	@RequestMapping(value="/accounts" , method=RequestMethod.GET)
+	public Account byTimeAndCity(@RequestParam("time") String accountTime,
+																		@RequestParam("city") String cityName){
+		List<Account>  account = accountRepository.findByTime(Timestamp.valueOf(accountTime));
+		//logger.info("accounts-service byTime() found: " + account);
+		for(Account a:account){
+			if(a.city.equals(cityName)){
+				return a;
+			}
+		}
+		throw new AccountNotFoundException(Timestamp.valueOf(accountTime),cityName);
+	}
+	
+	
 }
